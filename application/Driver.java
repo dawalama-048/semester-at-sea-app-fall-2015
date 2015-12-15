@@ -13,11 +13,11 @@ import java.io.*;
 
 public class Driver
 {
-    private static ArrayList<Country> destinations = new ArrayList();
-    private static ArrayList<Student> students = new ArrayList();
-    private static ArrayList<Parent> parents = new ArrayList();
-    private static ArrayList<Course> courses = new ArrayList();
-    private static ArrayList<FieldProgram> fp = new ArrayList();
+    private static ArrayList<Country> destinations = new ArrayList<>();
+    private static ArrayList<Student> students = new ArrayList<>();
+    private static ArrayList<Parent> parents = new ArrayList<>();
+    private static ArrayList<Course> courses = new ArrayList<>();
+    private static ArrayList<FieldProgram> fp = new ArrayList<>();
     private static Scanner in = new Scanner(System.in);
     
 	private TextField textField;
@@ -44,6 +44,7 @@ public class Driver
      */
     public void Login() 
     {
+    	testmethod();
 
         if (stage == 0) {
         	userType = textField.getText();
@@ -57,14 +58,37 @@ public class Driver
         	textArea.appendText("\nPlease enter password: ");
         } else if (stage == 2) {
         	String password = textField.getText();
-        	stage++;
+        	System.out.println("got pass");
+        	System.out.println(userType);
+        	
         	textField.setText("");
         	if (userType.equals("parent"))
-        		CheckValidLoginParent(username, password);
+        		if(CheckValidLoginParent(username, password)) {
+        			Parent par = null;
+        			for (Parent parent : parents) {
+        				if (parent.getUsername().equals(username)) {
+        					par = parent;
+        				}
+        			}
+        			ParentMenu(par);
+        		}
         	else if(userType.equals("student"))
-        		CheckValidLoginStudent(username, password);
+        		if(CheckValidLoginStudent(username, password)) {
+        			System.out.println("VALID");
+        			Student stud = null;
+        			for (Student student : students) {
+        				if (student.getUsername().equals(username)) {
+        					stud = student;
+        				}
+        			}
+        			StudentMenu(stud);
+        			System.out.println("Started");
+        		}
         	else 
-        		textArea.appendText("\nNot a valid user");
+        		textArea.appendText("\nNot a valid user. Try Again.");
+    			System.out.println(students);
+
+        		stage--;
         }
         /*
           System.out.print("Are you a student or parent?: ");
@@ -89,8 +113,7 @@ public class Driver
             CheckValidLoginStudent(username, password);
           else 
             System.out.println("Not a valid user");
-            */
-         
+            */         
 
           
     }
@@ -103,7 +126,7 @@ public class Driver
      * @param username and password are valid or not
      * 
      */
-    public void CheckValidLoginStudent(String username, String password)
+    public boolean CheckValidLoginStudent(String username, String password)
     {
       for(Student stud : students)
       { 
@@ -111,12 +134,11 @@ public class Driver
           {
             if(password.equals(stud.getPassword()))
                 StudentMenu(stud);
-                return;
-            }
-            else
-                System.out.println("Invalid username or password");
-            
+                return true;
+          }
+      
         }
+      return false;
     
     }
     
@@ -124,7 +146,7 @@ public class Driver
      * checks whether parent has a valid login 
      * @param username and password are valid or not
      */
-    public void CheckValidLoginParent(String username, String password)
+    public boolean CheckValidLoginParent(String username, String password)
     {
       for(Parent par : parents)
       { 
@@ -132,12 +154,11 @@ public class Driver
           {
             if(password.equals(par.getPassword()))
                 ParentMenu(par);
-                return;
+                return true;
             }
-            else
-                System.out.println("Invalid username or password");
         
         }
+      return false;
       
     
     }
@@ -153,11 +174,11 @@ public class Driver
         String StudentMenu = "0";
         while (!(StudentMenu.equals("5"))) {
         
-        	textArea.appendText("1. Courses currently enrolled in: ");
-        	textArea.appendText("2. Field programs currently enrolled in: ");
-        	textArea.appendText("3. Current Location: ");
-        	textArea.appendText("4. Change Username: ");
-        	textArea.appendText("5. Log out");
+        	textArea.appendText("\n1. Courses currently enrolled in: ");
+        	textArea.appendText("\n2. Field programs currently enrolled in: ");
+        	textArea.appendText("\n3. Current Location: ");
+        	textArea.appendText("\n4. Change Username: ");
+        	textArea.appendText("\n5. Log out");
         
         
         StudentMenu = textField.getText();
@@ -195,7 +216,7 @@ public class Driver
      */
     public void viewChangeUsername(Student student)
     {
-        System.out.println("Enter username greater than 5 characters");
+    	textArea.appendText("Enter username greater than 5 characters");
         student.setUsername(in.next()); 
     }
 
@@ -208,10 +229,11 @@ public class Driver
         System.out.println(student.getCourse());
          StudentMenu(student);
     } 
+  
     
-    /**
-     * allows a student to view their field programs
-     */
+/**
+* allows a student to view their field programs
+*/
     public void viewFieldProgram(Student student)
     {
         System.out.println(student.getCourse());
@@ -232,7 +254,7 @@ public class Driver
      */
     public void viewCurrentLocation()
     {
-        System.out.println("CurrentLocation");
+    	textArea.appendText("CurrentLocation");
         // StudentMenu(student);
     
     }
@@ -242,7 +264,7 @@ public class Driver
      */
     public void Logout()
     {
-        System.out.println("Goodbye!");
+    	textArea.appendText("Goodbye!");
         return;
     }
     
@@ -258,13 +280,13 @@ public class Driver
       String ParentMenu = "0";
         while (!(ParentMenu.equals("3"))) {
           
-        System.out.println("1. Fetch Child: ");
-        System.out.println("2. Add Child: ");
-        System.out.println("3. Log out");
+        	textArea.appendText("\n1. Fetch Child: ");
+        	textArea.appendText("\n2. Add Child: ");
+        	textArea.appendText("\n3. Log out");
         
         
-       
-        ParentMenu = in.next();
+        ParentMenu = textField.getText();
+         
         try {
         if (ParentMenu.equals("1") || ParentMenu.equals("2") || ParentMenu.equals("3"))
             {
@@ -295,7 +317,7 @@ public class Driver
     public void viewChild(Parent par)
     {
        
-        System.out.println("This is: " + par.getChild().toString());
+    	textArea.appendText("This is: " + par.getChild().toString());
       //  ParentMenu(par);
     }
     
@@ -305,7 +327,7 @@ public class Driver
     public void addChild(Parent par)
     {
         //par.addchild();
-        System.out.println("Child Added");
+    	textArea.appendText("Child Added");
           //      ParentMenu(par);
     }
     
@@ -402,6 +424,7 @@ public class Driver
             Student s = classList[i]; 
             {
                 System.out.println(s);
+                students.add(s);
                 writer.write("Student: " + s.getUsername() + " | Student Password: " + s.getPassword() + "| Student's Courses: " + s.getCourse()+ "\n");
             }
         } 
